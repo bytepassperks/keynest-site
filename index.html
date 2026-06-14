@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Keynest — Your own password vault, on your Cloudflare. Free forever.</title>
+<meta name="description" content="Keynest is a self-hosted, Bitwarden-compatible password manager that runs on your own Cloudflare account for $0. End-to-end encrypted, works with the official Bitwarden apps, TOTP built in. Deploy in one click." />
+<meta name="theme-color" content="#171633" />
+<link rel="icon" href="favicon.ico" />
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png" />
+<link rel="apple-touch-icon" href="apple-touch-icon.png" />
+<!-- Open Graph -->
+<meta property="og:title" content="Keynest — your own password vault on Cloudflare, free forever" />
+<meta property="og:description" content="One-click self-hosted, Bitwarden-compatible password manager on your own Cloudflare. End-to-end encrypted. $0 forever." />
+<meta property="og:type" content="website" />
+<meta property="og:image" content="icon-512.png" />
+<style>
+  :root{
+    --indigo:#3B3B98;
+    --indigo-deep:#171633;
+    --emerald:#2ED47A;
+    --teal:#27c2c9;
+    --ink:#0f1020;
+    --paper:#ffffff;
+    --muted:#5b5d72;
+    --line:#e7e7f0;
+    --bg-soft:#f6f7fb;
+    --radius:18px;
+    --shadow:0 20px 50px -20px rgba(23,22,51,.35);
+    --grad:linear-gradient(120deg,var(--indigo) 0%,var(--teal) 55%,var(--emerald) 100%);
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    margin:0;font-family:"Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    color:var(--ink);background:var(--paper);line-height:1.55;-webkit-font-smoothing:antialiased;
+  }
+  a{color:inherit;text-decoration:none}
+  .wrap{max-width:1120px;margin:0 auto;padding:0 24px}
+  .btn{
+    display:inline-flex;align-items:center;gap:10px;border:0;cursor:pointer;
+    font-weight:600;font-size:15px;padding:13px 22px;border-radius:999px;transition:.18s transform,.18s box-shadow,.18s background;
+  }
+  .btn-primary{background:var(--grad);color:#fff;box-shadow:0 12px 30px -10px rgba(46,212,122,.7)}
+  .btn-primary:hover{transform:translateY(-2px);box-shadow:0 18px 40px -12px rgba(46,212,122,.85)}
+  .btn-ghost{background:rgba(255,255,255,.08);color:#fff;border:1px solid rgba(255,255,255,.25)}
+  .btn-ghost:hover{background:rgba(255,255,255,.16)}
+  .btn-dark{background:var(--indigo-deep);color:#fff}
+  .btn-dark:hover{transform:translateY(-2px)}
+  .btn-lg{font-size:16.5px;padding:16px 28px}
+
+  /* NAV */
+  header.nav{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.82);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+  .nav-inner{display:flex;align-items:center;justify-content:space-between;height:68px}
+  .brand{display:flex;align-items:center;gap:11px;font-weight:800;font-size:20px;letter-spacing:-.02em}
+  .brand img{width:34px;height:34px;border-radius:9px}
+  .nav-links{display:flex;align-items:center;gap:30px}
+  .nav-links a{font-size:14.5px;color:var(--muted);font-weight:500}
+  .nav-links a:hover{color:var(--ink)}
+  .nav-cta{display:flex;align-items:center;gap:12px}
+  .nav .btn{padding:10px 18px;font-size:14px}
+  .menu-toggle{display:none;background:none;border:0;font-size:26px;cursor:pointer;color:var(--ink)}
+
+  /* HERO */
+  .hero{position:relative;overflow:hidden;background:radial-gradient(1200px 600px at 70% -10%,rgba(46,212,122,.18),transparent 60%),radial-gradient(900px 500px at 10% 0%,rgba(59,59,152,.18),transparent 55%),var(--indigo-deep);color:#fff}
+  .hero .wrap{padding:88px 24px 96px;display:grid;grid-template-columns:1.05fr .95fr;gap:48px;align-items:center}
+  .pill{display:inline-flex;align-items:center;gap:8px;font-size:13px;font-weight:600;padding:7px 14px;border-radius:999px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.18);color:#cfe9ff}
+  .pill .dot{width:8px;height:8px;border-radius:50%;background:var(--emerald);box-shadow:0 0 0 4px rgba(46,212,122,.25)}
+  h1{font-size:54px;line-height:1.04;letter-spacing:-.03em;margin:22px 0 18px;font-weight:800}
+  h1 .grad{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+  .sub{font-size:19px;color:#c7c8e0;max-width:560px;margin-bottom:30px}
+  .hero-cta{display:flex;gap:14px;flex-wrap:wrap;align-items:center}
+  .hero-note{margin-top:18px;font-size:13.5px;color:#9fa1c4;display:flex;gap:18px;flex-wrap:wrap}
+  .hero-note span{display:inline-flex;align-items:center;gap:7px}
+  .check{color:var(--emerald);font-weight:700}
+  .hero-visual{position:relative;display:flex;justify-content:center;align-items:center}
+  .hero-visual .glow{position:absolute;width:330px;height:330px;border-radius:50%;background:var(--grad);filter:blur(60px);opacity:.55}
+  .hero-visual img{position:relative;width:300px;height:300px;filter:drop-shadow(0 30px 60px rgba(0,0,0,.5))}
+
+  /* LOGO STRIP */
+  .logos{background:var(--bg-soft);border-bottom:1px solid var(--line)}
+  .logos .wrap{padding:22px 24px;display:flex;align-items:center;justify-content:center;gap:14px;flex-wrap:wrap;color:var(--muted);font-size:14px;font-weight:500}
+  .logos b{color:var(--ink)}
+
+  section{padding:84px 0}
+  .eyebrow{color:var(--indigo);font-weight:700;font-size:13px;letter-spacing:.12em;text-transform:uppercase}
+  h2{font-size:38px;letter-spacing:-.025em;margin:10px 0 14px;font-weight:800}
+  .lead{font-size:18px;color:var(--muted);max-width:640px}
+  .center{text-align:center;margin:0 auto}
+
+  .grid{display:grid;gap:22px;margin-top:46px}
+  .grid-3{grid-template-columns:repeat(3,1fr)}
+  .card{background:var(--paper);border:1px solid var(--line);border-radius:var(--radius);padding:28px;transition:.2s transform,.2s box-shadow}
+  .card:hover{transform:translateY(-4px);box-shadow:var(--shadow)}
+  .ic{width:46px;height:46px;border-radius:12px;display:grid;place-items:center;font-size:22px;background:linear-gradient(135deg,rgba(59,59,152,.12),rgba(46,212,122,.16));margin-bottom:16px}
+  .card h3{font-size:18.5px;margin:0 0 8px}
+  .card p{color:var(--muted);font-size:15px;margin:0}
+
+  /* STEPS */
+  .steps{background:var(--bg-soft)}
+  .step{position:relative;background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:30px 26px}
+  .step .num{width:38px;height:38px;border-radius:50%;background:var(--grad);color:#fff;font-weight:800;display:grid;place-items:center;margin-bottom:16px}
+  .step h3{margin:0 0 8px;font-size:19px}
+  .step p{color:var(--muted);margin:0;font-size:15px}
+
+  /* COMPARISON */
+  table.cmp{width:100%;border-collapse:collapse;margin-top:40px;background:#fff;border:1px solid var(--line);border-radius:var(--radius);overflow:hidden}
+  table.cmp th,table.cmp td{padding:16px 18px;text-align:left;border-bottom:1px solid var(--line);font-size:15px}
+  table.cmp thead th{background:var(--indigo-deep);color:#fff;font-weight:600}
+  table.cmp thead th.hl{background:var(--indigo)}
+  table.cmp td.feat{font-weight:600}
+  table.cmp td.yes{color:#1b9e57;font-weight:700}
+  table.cmp td.no{color:#b23b3b;font-weight:600}
+  table.cmp tr:last-child td{border-bottom:0}
+  .colnote{font-size:12px;color:var(--muted);font-weight:400;display:block}
+
+  /* MANAGED */
+  .managed{background:var(--indigo-deep);color:#fff}
+  .managed .box{display:grid;grid-template-columns:1.2fr .8fr;gap:36px;align-items:center;background:linear-gradient(120deg,rgba(59,59,152,.45),rgba(39,194,201,.25));border:1px solid rgba(255,255,255,.14);border-radius:24px;padding:42px}
+  .managed h2{margin-top:6px}
+  .managed p{color:#cdd0ee;font-size:17px}
+  .managed ul{margin:18px 0 0;padding:0;list-style:none;color:#dfe1f5;font-size:15px}
+  .managed li{display:flex;gap:10px;margin-bottom:10px}
+  .price-card{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.16);border-radius:20px;padding:30px 26px}
+  .price-badge{display:inline-block;background:var(--grad);color:#06251a;font-weight:700;font-size:12px;letter-spacing:.08em;text-transform:uppercase;padding:6px 12px;border-radius:999px}
+  .price-amount{font-size:46px;font-weight:800;color:#fff;margin:16px 0 2px;line-height:1}
+  .price-alt{font-size:24px;font-weight:700;color:#9be8c0}
+  .price-sub{color:#cdd0ee;font-size:14px;margin:0 0 20px}
+  .price-foot{font-size:13px;color:#b9bce0;margin-top:14px}
+
+  /* FAQ */
+  .faq{max-width:820px;margin:46px auto 0}
+  details{border:1px solid var(--line);border-radius:14px;padding:0 20px;margin-bottom:14px;background:#fff;transition:.2s box-shadow}
+  details[open]{box-shadow:var(--shadow)}
+  summary{cursor:pointer;list-style:none;padding:20px 0;font-weight:600;font-size:16.5px;display:flex;justify-content:space-between;align-items:center}
+  summary::-webkit-details-marker{display:none}
+  summary::after{content:"+";font-size:24px;color:var(--indigo);font-weight:400;transition:.2s transform}
+  details[open] summary::after{transform:rotate(45deg)}
+  details p{margin:0 0 20px;color:var(--muted);font-size:15.5px}
+
+  /* CTA */
+  .cta{background:var(--grad)}
+  .cta .wrap{padding:74px 24px;text-align:center;color:#fff}
+  .cta h2{font-size:40px;color:#fff}
+  .cta p{font-size:18px;color:rgba(255,255,255,.92);max-width:560px;margin:0 auto 28px}
+
+  footer{background:var(--indigo-deep);color:#aeb0d4;padding:46px 0 40px;font-size:14px}
+  .foot-top{display:flex;justify-content:space-between;align-items:flex-start;gap:24px;flex-wrap:wrap}
+  .foot-brand{display:flex;align-items:center;gap:11px;color:#fff;font-weight:800;font-size:18px}
+  .foot-brand img{width:30px;height:30px;border-radius:8px}
+  .foot-links{display:flex;gap:40px;flex-wrap:wrap}
+  .foot-links h4{color:#fff;font-size:13px;text-transform:uppercase;letter-spacing:.1em;margin:0 0 12px}
+  .foot-links a{display:block;color:#aeb0d4;margin-bottom:9px}
+  .foot-links a:hover{color:#fff}
+  .foot-bottom{border-top:1px solid rgba(255,255,255,.1);margin-top:32px;padding-top:22px;display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap;font-size:13px;color:#8a8cb4}
+  .foot-bottom a{color:#cfe9ff}
+
+  @media(max-width:900px){
+    .hero .wrap{grid-template-columns:1fr;padding:64px 24px 72px}
+    .hero-visual{order:-1}
+    .hero-visual img{width:220px;height:220px}
+    h1{font-size:42px}
+    .grid-3{grid-template-columns:1fr}
+    .managed .box{grid-template-columns:1fr;padding:30px}
+    .nav-links{display:none}
+    .menu-toggle{display:block}
+    .nav-links.open{display:flex;position:absolute;top:68px;left:0;right:0;flex-direction:column;background:#fff;border-bottom:1px solid var(--line);padding:18px 24px;gap:16px}
+    table.cmp{font-size:13px}
+    table.cmp th,table.cmp td{padding:12px 10px}
+  }
+</style>
+</head>
+<body>
+
+<header class="nav">
+  <div class="wrap nav-inner">
+    <a class="brand" href="#top"><img src="keynest-logo.png" alt="Keynest logo" />Keynest</a>
+    <nav class="nav-links" id="navlinks">
+      <a href="#features">Features</a>
+      <a href="#how">How it works</a>
+      <a href="#compare">Compare</a>
+      <a href="#managed">Managed setup</a>
+      <a href="#faq">FAQ</a>
+    </nav>
+    <div class="nav-cta">
+      <a class="btn btn-dark" href="https://deploy.workers.cloudflare.com/?url=https://github.com/bytepassperks/keynest" target="_blank" rel="noreferrer">Deploy free</a>
+      <button class="menu-toggle" id="menuToggle" aria-label="Menu">☰</button>
+    </div>
+  </div>
+</header>
+
+<main id="top">
+  <!-- HERO -->
+  <section class="hero" style="padding:0">
+    <div class="wrap">
+      <div class="hero-copy">
+        <span class="pill"><span class="dot"></span> Runs on your own Cloudflare · $0 forever</span>
+        <h1>Your passwords. <span class="grad">Your Cloudflare.</span> Your control.</h1>
+        <p class="sub">Keynest is a self-hosted, end-to-end encrypted password manager that deploys to <b>your own</b> Cloudflare account in one click — and works with the official Bitwarden apps you already use.</p>
+        <div class="hero-cta">
+          <a class="btn btn-primary btn-lg" href="https://deploy.workers.cloudflare.com/?url=https://github.com/bytepassperks/keynest" target="_blank" rel="noreferrer">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M6 16a4 4 0 0 1 .9-7.9 5.5 5.5 0 0 1 10.6-1.1A3.8 3.8 0 0 1 18 16H6z" fill="#fff" opacity=".95"/></svg>
+            Deploy to Cloudflare
+          </a>
+          <a class="btn btn-ghost btn-lg" href="#how">See how it works</a>
+        </div>
+        <div class="hero-note">
+          <span><b class="check">✓</b> No credit card</span>
+          <span><b class="check">✓</b> End-to-end encrypted</span>
+          <span><b class="check">✓</b> Your data never touches us</span>
+        </div>
+      </div>
+      <div class="hero-visual">
+        <div class="glow"></div>
+        <img src="icon-512.png" alt="Keynest" />
+      </div>
+    </div>
+  </section>
+
+  <!-- LOGO STRIP -->
+  <div class="logos">
+    <div class="wrap">
+      Works with the official&nbsp;<b>Bitwarden</b>&nbsp;apps — browser&nbsp;extensions, iOS, Android, desktop &amp; CLI. Just point them at your server.
+    </div>
+  </div>
+
+  <!-- FEATURES -->
+  <section id="features">
+    <div class="wrap">
+      <div class="center" style="max-width:680px">
+        <span class="eyebrow">Why Keynest</span>
+        <h2>Premium password management, self-hosted for $0</h2>
+        <p class="lead center">Everything most people pay for — TOTP, attachments, Send, passkeys — included, because it all runs on your own free Cloudflare tier.</p>
+      </div>
+      <div class="grid grid-3">
+        <div class="card"><div class="ic">🔒</div><h3>End-to-end encrypted</h3><p>Your vault is encrypted with your master password before it ever leaves your device. Nobody — not us, not Cloudflare — can read it.</p></div>
+        <div class="card"><div class="ic">🧩</div><h3>Works with Bitwarden apps</h3><p>No new app to learn. Use the official Bitwarden extension, mobile, desktop and CLI — just set the server to your Keynest URL.</p></div>
+        <div class="card"><div class="ic">🔑</div><h3>TOTP &amp; passkeys built in</h3><p>Generate 2FA codes and store passkeys right in your vault — a paid Bitwarden feature, free on your instance.</p></div>
+        <div class="card"><div class="ic">📎</div><h3>Attachments &amp; Send</h3><p>Attach files to items and share secrets securely with Bitwarden Send, all stored on your own Cloudflare.</p></div>
+        <div class="card"><div class="ic">🔄</div><h3>Automatic updates</h3><p>New releases roll out to your instance automatically — fully re-branded as Keynest — with your data untouched.</p></div>
+        <div class="card"><div class="ic">☁️</div><h3>Your Cloudflare, your data</h3><p>It lives on <b>your</b> account, in your region. Cancel anytime, export anytime. No lock-in, no monthly hosting bill.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- HOW IT WORKS -->
+  <section id="how" class="steps">
+    <div class="wrap">
+      <div class="center" style="max-width:680px">
+        <span class="eyebrow">One click</span>
+        <h2>Live in about two minutes</h2>
+        <p class="lead center">No servers, no Docker, no credit card. The button does the heavy lifting on your own Cloudflare account.</p>
+      </div>
+      <div class="grid grid-3">
+        <div class="step"><div class="num">1</div><h3>Click “Deploy to Cloudflare”</h3><p>You’re taken to Cloudflare and asked to log into <b>your own</b> account (or create a free one).</p></div>
+        <div class="step"><div class="num">2</div><h3>Cloudflare builds it</h3><p>It forks Keynest to your GitHub and auto-provisions the database, storage and worker — all on the free tier.</p></div>
+        <div class="step"><div class="num">3</div><h3>Open your vault</h3><p>You get your own URL. Register the first account (that’s the admin), connect the Bitwarden app, and you’re done.</p></div>
+      </div>
+      <div class="center" style="margin-top:40px">
+        <a class="btn btn-primary btn-lg" href="https://deploy.workers.cloudflare.com/?url=https://github.com/bytepassperks/keynest" target="_blank" rel="noreferrer">Deploy to Cloudflare — free</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- COMPARISON -->
+  <section id="compare">
+    <div class="wrap">
+      <div class="center" style="max-width:680px">
+        <span class="eyebrow">How it compares</span>
+        <h2>Own your vault without the trade-offs</h2>
+        <p class="lead center">The privacy of self-hosting, without the server to maintain or the monthly bill.</p>
+      </div>
+      <table class="cmp">
+        <thead>
+          <tr>
+            <th>&nbsp;</th>
+            <th class="hl">Keynest<span class="colnote">self-host on Cloudflare</span></th>
+            <th>Bitwarden Cloud<span class="colnote">hosted SaaS</span></th>
+            <th>Vaultwarden<span class="colnote">your own server</span></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td class="feat">Monthly cost</td><td class="yes">$0</td><td>Free / $10&nbsp;yr+</td><td>Server bill</td></tr>
+          <tr><td class="feat">Your data on your infra</td><td class="yes">Yes</td><td class="no">No</td><td class="yes">Yes</td></tr>
+          <tr><td class="feat">Setup effort</td><td class="yes">One click</td><td class="yes">None</td><td class="no">Docker + VPS</td></tr>
+          <tr><td class="feat">Server to maintain</td><td class="yes">None (serverless)</td><td class="yes">None</td><td class="no">You patch it</td></tr>
+          <tr><td class="feat">TOTP / passkeys</td><td class="yes">Included</td><td>Paid tier</td><td class="yes">Included</td></tr>
+          <tr><td class="feat">Official Bitwarden apps</td><td class="yes">Yes</td><td class="yes">Yes</td><td class="yes">Yes</td></tr>
+          <tr><td class="feat">Credit card to start</td><td class="yes">No</td><td class="yes">No</td><td class="no">Usually</td></tr>
+        </tbody>
+      </table>
+      <p class="colnote" style="margin-top:14px;text-align:center">Bitwarden and Vaultwarden are trademarks of their respective owners. Keynest is an independent, Bitwarden-compatible project and is not affiliated with or endorsed by them.</p>
+    </div>
+  </section>
+
+  <!-- MANAGED -->
+  <section id="managed" class="managed">
+    <div class="wrap">
+      <div class="box">
+        <div>
+          <span class="eyebrow" style="color:#9be8c0">Don’t want to click buttons?</span>
+          <h2>Managed setup — we deploy it for you</h2>
+          <p>Prefer hands-off? We’ll set up Keynest on your Cloudflare for you, configure backups and auto-updates, and hand you a ready-to-use vault. You keep full ownership — we never store your master password.</p>
+          <ul>
+            <li><span class="check">✓</span> Deployed to your own Cloudflare, in your region</li>
+            <li><span class="check">✓</span> Scheduled encrypted backups configured</li>
+            <li><span class="check">✓</span> Automatic updates wired up</li>
+            <li><span class="check">✓</span> End-to-end encrypted — your data stays yours</li>
+          </ul>
+        </div>
+        <div style="text-align:center">
+          <div class="price-card">
+            <span class="price-badge">One-time · Lifetime</span>
+            <div class="price-amount">₹3,000<span class="price-alt"> / $50</span></div>
+            <div class="price-sub">Pay once. No subscriptions, no monthly hosting fees — ever.</div>
+            <a class="btn btn-primary btn-lg" href="mailto:hello@keynest.app?subject=Keynest%20managed%20setup%20(%E2%82%B93000%20%2F%20%2450%20lifetime)">Request managed setup</a>
+            <p class="price-foot">Or deploy it yourself in one click — totally free.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section id="faq">
+    <div class="wrap">
+      <div class="center" style="max-width:680px">
+        <span class="eyebrow">Questions</span>
+        <h2>Frequently asked</h2>
+      </div>
+      <div class="faq">
+        <details open><summary>Is it really free?</summary><p>Yes. Keynest runs on Cloudflare’s free tier — Workers, the D1 database and KV storage all have generous free allowances that comfortably cover a personal vault. There’s no charge from us and no monthly hosting bill.</p></details>
+        <details><summary>Do I need a credit card?</summary><p>No. Keynest deploys in KV storage mode, which doesn’t require a card on file. (If you later want larger file attachments you can switch on Cloudflare R2, which does ask for a card — but it’s optional.)</p></details>
+        <details><summary>Where is my data stored?</summary><p>Entirely on <b>your</b> Cloudflare account, in the region you choose. Your vault is end-to-end encrypted with your master password, so even Cloudflare can’t read it — and we never see it at all.</p></details>
+        <details><summary>Which apps can I use?</summary><p>The official Bitwarden apps: browser extensions (Chrome, Firefox, Edge, Safari, Brave…), iOS, Android, desktop and the CLI. There’s no separate app to install — you just set the server URL to your Keynest instance.</p></details>
+        <details><summary>How do updates work?</summary><p>Your instance checks for new releases automatically and redeploys itself — fully re-branded as Keynest — without touching your stored data.</p></details>
+        <details><summary>What happens if I want to leave?</summary><p>It’s your account and your data. Export your vault any time from the app, and delete the Cloudflare resources whenever you like. No lock-in.</p></details>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="cta">
+    <div class="wrap">
+      <h2>Own your password vault today</h2>
+      <p>One click, your Cloudflare, $0 forever. Your passwords have never been this private.</p>
+      <a class="btn btn-dark btn-lg" href="https://deploy.workers.cloudflare.com/?url=https://github.com/bytepassperks/keynest" target="_blank" rel="noreferrer">Deploy to Cloudflare</a>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="foot-top">
+      <div>
+        <div class="foot-brand"><img src="keynest-logo.png" alt="Keynest" />Keynest</div>
+        <p style="max-width:300px;margin-top:14px">Your own end-to-end encrypted password manager, self-hosted on Cloudflare for free.</p>
+      </div>
+      <div class="foot-links">
+        <div>
+          <h4>Product</h4>
+          <a href="#features">Features</a>
+          <a href="#how">How it works</a>
+          <a href="#compare">Compare</a>
+          <a href="#faq">FAQ</a>
+        </div>
+        <div>
+          <h4>Get started</h4>
+          <a href="https://deploy.workers.cloudflare.com/?url=https://github.com/bytepassperks/keynest" target="_blank" rel="noreferrer">Deploy free</a>
+          <a href="#managed">Managed setup</a>
+        </div>
+      </div>
+    </div>
+    <div class="foot-bottom">
+      <span>© <span id="yr"></span> Keynest. Independent, Bitwarden-compatible.</span>
+      <span>Based on <a href="https://github.com/shuaiplus/NodeWarden" target="_blank" rel="noreferrer">NodeWarden by @shuaiplus</a> · LGPL-3.0</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+  document.getElementById('yr').textContent = new Date().getFullYear();
+  var t = document.getElementById('menuToggle'), n = document.getElementById('navlinks');
+  if (t) t.addEventListener('click', function(){ n.classList.toggle('open'); });
+  n && n.querySelectorAll('a').forEach(function(a){ a.addEventListener('click', function(){ n.classList.remove('open'); }); });
+</script>
+</body>
+</html>
