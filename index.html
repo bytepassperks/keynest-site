@@ -155,6 +155,29 @@
   .foot-bottom{border-top:1px solid rgba(255,255,255,.1);margin-top:32px;padding-top:22px;display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap;font-size:13px;color:#8a8cb4}
   .foot-bottom a{color:#cfe9ff}
 
+  /* PAYMENT MODAL */
+  .modal-overlay{position:fixed;inset:0;background:rgba(15,16,32,.72);backdrop-filter:blur(5px);display:none;align-items:center;justify-content:center;z-index:100;padding:20px}
+  .modal-overlay.open{display:flex}
+  .modal{position:relative;background:#fff;color:var(--ink);border-radius:22px;max-width:430px;width:100%;padding:34px 30px;text-align:center;box-shadow:0 30px 80px -20px rgba(0,0,0,.6);max-height:94vh;overflow:auto}
+  .modal h3{margin:0 0 6px;font-size:22px;letter-spacing:-.02em}
+  .modal-sub{color:var(--muted);font-size:14.5px;margin:0 0 18px}
+  .modal-close{position:absolute;top:12px;right:16px;background:none;border:0;font-size:28px;line-height:1;cursor:pointer;color:var(--muted)}
+  .modal-close:hover{color:var(--ink)}
+  .pay-amount{display:inline-block;background:var(--grad);color:#06251a;font-weight:800;font-size:13px;letter-spacing:.06em;padding:6px 14px;border-radius:999px;margin-bottom:16px}
+  .upi-qr{width:236px;height:236px;border-radius:14px;border:1px solid var(--line);object-fit:contain;background:#fff;display:block;margin:0 auto}
+  .upi-id{display:flex;align-items:center;justify-content:center;gap:10px;margin:16px 0 4px;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12.5px;background:var(--bg-soft);border:1px solid var(--line);border-radius:10px;padding:10px 12px}
+  .upi-id span{word-break:break-all}
+  .btn-copy{border:0;background:var(--indigo);color:#fff;font-weight:600;font-size:12px;padding:6px 12px;border-radius:8px;cursor:pointer;flex-shrink:0}
+  .btn-copy:hover{filter:brightness(1.08)}
+  .upi-pay-btn{width:100%;justify-content:center;margin-top:14px}
+  .btn-confirm{display:inline-flex;align-items:center;justify-content:center;gap:8px;width:100%;margin-top:10px;background:var(--indigo-deep);color:#fff;border-radius:999px;font-weight:600;font-size:15px;padding:13px 22px}
+  .btn-confirm:hover{transform:translateY(-2px)}
+  .modal-note{font-size:13px;color:var(--muted);margin:16px 0 6px}
+  .modal-hr{border:0;border-top:1px solid var(--line);margin:20px 0 14px}
+  .modal-intl{font-size:13.5px;color:var(--muted);margin:0}
+  .modal-intl a{color:var(--indigo);font-weight:700}
+  .upi-apps{font-size:12px;color:var(--muted);margin:10px 0 0}
+
   @media(max-width:900px){
     .hero .wrap{grid-template-columns:1fr;padding:64px 24px 72px}
     .hero-visual{order:-1}
@@ -167,6 +190,8 @@
     .nav-links.open{display:flex;position:absolute;top:68px;left:0;right:0;flex-direction:column;background:#fff;border-bottom:1px solid var(--line);padding:18px 24px;gap:16px}
     table.cmp{font-size:13px}
     table.cmp th,table.cmp td{padding:12px 10px}
+    .modal{padding:28px 20px}
+    .upi-qr{width:208px;height:208px}
   }
 </style>
 </head>
@@ -311,8 +336,8 @@
             <span class="price-badge">One-time · Lifetime</span>
             <div class="price-amount">₹3,000<span class="price-alt"> / $50</span></div>
             <div class="price-sub">Pay once. No subscriptions, no monthly hosting fees — ever. Then $0 to run on your own Cloudflare.</div>
-            <a class="btn btn-primary btn-lg" href="mailto:hello@keynest.app?subject=Keynest%20setup%20request%20(%E2%82%B93000%20%2F%20%2450%20lifetime)">Request your setup</a>
-            <p class="price-foot">We’ll reply to arrange payment & schedule your setup.</p>
+            <button class="btn btn-primary btn-lg" data-pay style="width:100%;justify-content:center">Pay ₹3,000 with UPI</button>
+            <p class="price-foot" style="margin-top:16px">Pay instantly with any UPI app (GPay, PhonePe, Paytm, BHIM).<br>Outside India? <a href="mailto:hello@keynest.app?subject=Keynest%20setup%20request%20(%2450%20lifetime)&body=Hi%2C%20I%27d%20like%20a%20Keynest%20vault%20set%20up.%20I%27m%20paying%20from%20outside%20India%20(%2450)." style="color:#9be8c0;font-weight:700">Pay $50 by email →</a></p>
           </div>
         </div>
       </div>
@@ -334,6 +359,7 @@
         <details><summary>Which apps can I use?</summary><p>The official Bitwarden apps: browser extensions (Chrome, Firefox, Edge, Safari, Brave…), iOS, Android, desktop and the CLI. There’s no separate app to install — you just set the server URL to your Keynest instance.</p></details>
         <details><summary>How do updates work?</summary><p>Your instance checks for new releases automatically and redeploys itself — fully branded as Keynest — without touching your stored data. We set this up during your installation.</p></details>
         <details><summary>What happens if I want to leave?</summary><p>It’s your account and your data. Export your vault any time from the app, and delete the Cloudflare resources whenever you like. No lock-in.</p></details>
+        <details><summary>How do I pay?</summary><p>In India, pay the one-time <b>₹3,000</b> instantly via UPI — scan the QR or tap “Pay with UPI” to open GPay / PhonePe / Paytm / BHIM. Paying from outside India? Use the <b>$50</b> email option and we’ll send a payment link. Once we confirm payment, we schedule your setup — usually within a day.</p></details>
       </div>
     </div>
   </section>
@@ -347,6 +373,24 @@
     </div>
   </section>
 </main>
+
+<!-- PAYMENT MODAL -->
+<div class="modal-overlay" id="payModal" role="dialog" aria-modal="true" aria-labelledby="payTitle">
+  <div class="modal">
+    <button class="modal-close" id="payClose" aria-label="Close">&times;</button>
+    <span class="pay-amount">One-time · ₹3,000 · Lifetime</span>
+    <h3 id="payTitle">Pay ₹3,000 to get your Keynest vault</h3>
+    <p class="modal-sub">Scan the QR with any UPI app, or tap the button below on your phone.</p>
+    <img class="upi-qr" src="keynest-upi-qr.png" alt="UPI payment QR for Keynest setup (Sayan Roy Chowdhury / BharatPe)" />
+    <div class="upi-id"><span id="upiId">BHARATPE2Q0I0E6I0K22217@unitype</span><button class="btn-copy" id="copyUpi">Copy</button></div>
+    <a class="btn btn-primary btn-lg upi-pay-btn" id="upiPay" href="upi://pay?pa=BHARATPE2Q0I0E6I0K22217@unitype&pn=Sayan%20Roy%20Chowdhury&am=3000.00&cu=INR&tn=Keynest%20Setup">Pay ₹3,000 — open UPI app</a>
+    <p class="modal-note">After paying, let us know so we can start your setup:</p>
+    <a class="btn-confirm" href="mailto:hello@keynest.app?subject=Keynest%20payment%20done%20(%E2%82%B93000%20UPI)&body=Hi%2C%20I%27ve%20paid%20%E2%82%B93%2C000%20via%20UPI%20for%20Keynest%20setup.%0A%0AUPI%2FUTR%20reference%3A%20________%0APreferred%20setup%20time%3A%20________%0A%0AThanks!">I’ve paid — send my setup details</a>
+    <hr class="modal-hr" />
+    <p class="modal-intl">Outside India? <a href="mailto:hello@keynest.app?subject=Keynest%20setup%20request%20(%2450%20lifetime)&body=Hi%2C%20I%27d%20like%20a%20Keynest%20vault%20set%20up.%20I%27m%20paying%20from%20outside%20India%20(%2450).">Pay $50 by email →</a></p>
+    <p class="upi-apps">Payments via BharatPe · BHIM/UPI · GPay · PhonePe · Paytm</p>
+  </div>
+</div>
 
 <footer>
   <div class="wrap">
@@ -382,6 +426,22 @@
   var t = document.getElementById('menuToggle'), n = document.getElementById('navlinks');
   if (t) t.addEventListener('click', function(){ n.classList.toggle('open'); });
   n && n.querySelectorAll('a').forEach(function(a){ a.addEventListener('click', function(){ n.classList.remove('open'); }); });
+
+  // Payment modal
+  var modal = document.getElementById('payModal');
+  function openPay(){ modal.classList.add('open'); document.body.style.overflow='hidden'; }
+  function closePay(){ modal.classList.remove('open'); document.body.style.overflow=''; }
+  document.querySelectorAll('[data-pay]').forEach(function(b){ b.addEventListener('click', function(e){ e.preventDefault(); openPay(); }); });
+  document.getElementById('payClose').addEventListener('click', closePay);
+  modal.addEventListener('click', function(e){ if (e.target === modal) closePay(); });
+  document.addEventListener('keydown', function(e){ if (e.key === 'Escape') closePay(); });
+  var copyBtn = document.getElementById('copyUpi');
+  copyBtn.addEventListener('click', function(){
+    var id = document.getElementById('upiId').textContent.trim();
+    navigator.clipboard && navigator.clipboard.writeText(id).then(function(){
+      var o = copyBtn.textContent; copyBtn.textContent = 'Copied'; setTimeout(function(){ copyBtn.textContent = o; }, 1600);
+    });
+  });
 </script>
 </body>
 </html>
