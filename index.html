@@ -155,7 +155,30 @@
   .foot-bottom{border-top:1px solid rgba(255,255,255,.1);margin-top:32px;padding-top:22px;display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap;font-size:13px;color:#8a8cb4}
   .foot-bottom a{color:#cfe9ff}
 
+  /* REQUEST MODAL */
+  .modal-overlay{position:fixed;inset:0;background:rgba(15,16,32,.72);backdrop-filter:blur(5px);display:none;align-items:center;justify-content:center;z-index:100;padding:20px}
+  .modal-overlay.open{display:flex}
+  .modal{position:relative;background:#fff;color:var(--ink);border-radius:22px;max-width:460px;width:100%;padding:34px 30px;box-shadow:0 30px 80px -20px rgba(0,0,0,.6);max-height:94vh;overflow:auto}
+  .modal h3{margin:0 0 6px;font-size:22px;letter-spacing:-.02em;text-align:center}
+  .modal-sub{color:var(--muted);font-size:14.5px;margin:0 0 20px;text-align:center}
+  .modal-close{position:absolute;top:12px;right:16px;background:none;border:0;font-size:28px;line-height:1;cursor:pointer;color:var(--muted)}
+  .modal-close:hover{color:var(--ink)}
+  .field{margin-bottom:14px;text-align:left}
+  .field label{display:block;font-size:12.5px;font-weight:600;color:var(--ink);margin-bottom:6px}
+  .field input,.field select,.field textarea{width:100%;font:inherit;font-size:14.5px;color:var(--ink);background:var(--bg-soft);border:1px solid var(--line);border-radius:10px;padding:11px 13px;box-sizing:border-box}
+  .field textarea{resize:vertical;min-height:74px}
+  .field input:focus,.field select:focus,.field textarea:focus{outline:none;border-color:var(--indigo)}
+  .form-submit{width:100%;justify-content:center;margin-top:6px}
+  .form-msg{font-size:13.5px;margin:14px 0 0;text-align:center;display:none}
+  .form-msg.ok{display:block;color:#1f9d57}
+  .form-msg.err{display:block;color:#c0392b}
+  .form-note{font-size:12px;color:var(--muted);margin:14px 0 0;text-align:center}
+  .form-note a{color:var(--indigo)}
+  .modal-success{display:none;text-align:center;padding:6px 0}
+  .modal-success .tick{display:inline-flex;align-items:center;justify-content:center;width:58px;height:58px;border-radius:50%;background:var(--grad);color:#06251a;font-size:30px;font-weight:800;margin-bottom:6px}
+
   @media(max-width:900px){
+    .modal{padding:28px 22px}
     .hero .wrap{grid-template-columns:1fr;padding:64px 24px 72px}
     .hero-visual{order:-1}
     .hero-visual img{width:220px;height:220px}
@@ -311,7 +334,7 @@
             <span class="price-badge">One-time · Lifetime</span>
             <div class="price-amount">₹3,000<span class="price-alt"> / $50</span></div>
             <div class="price-sub">Pay once. No subscriptions, no monthly hosting fees — ever. Then $0 to run on your own Cloudflare.</div>
-            <a class="btn btn-primary btn-lg" href="mailto:harryroger798@gmail.com?subject=Keynest%20setup%20request%20(%E2%82%B93000%20%2F%20%2450%20lifetime)&body=Hi%2C%20I%27d%20like%20a%20Keynest%20vault%20set%20up.%0A%0APreferred%20payment%3A%20%E2%82%B93%2C000%20(INR)%20%2F%20%2450%20(USD)%0APreferred%20setup%20time%3A%20________%0A%0AThanks!" style="width:100%;justify-content:center">Request your setup</a>
+            <button class="btn btn-primary btn-lg" data-open-request style="width:100%;justify-content:center">Request your setup</button>
             <p class="price-foot" style="margin-top:16px">Email us and we’ll reply with payment details and schedule your setup — <b>₹3,000</b> (India) or <b>$50</b> (international).</p>
           </div>
         </div>
@@ -349,6 +372,33 @@
   </section>
 </main>
 
+<!-- REQUEST MODAL -->
+<div class="modal-overlay" id="reqModal" role="dialog" aria-modal="true" aria-labelledby="reqTitle">
+  <div class="modal">
+    <button class="modal-close" id="reqClose" aria-label="Close">&times;</button>
+    <div id="reqFormWrap">
+      <h3 id="reqTitle">Request your Keynest setup</h3>
+      <p class="modal-sub">Leave your details and we’ll email you payment info (₹3,000 India / $50 international) and schedule your setup — usually within a day.</p>
+      <form id="reqForm" novalidate>
+        <div class="field"><label for="rf-name">Your name</label><input id="rf-name" name="name" type="text" required placeholder="Jane Doe" /></div>
+        <div class="field"><label for="rf-email">Your email</label><input id="rf-email" name="email" type="email" required placeholder="you@example.com" /></div>
+        <div class="field"><label for="rf-plan">Payment</label><select id="rf-plan" name="plan"><option>₹3,000 — India</option><option>$50 — International</option></select></div>
+        <div class="field"><label for="rf-msg">Anything else? (optional)</label><textarea id="rf-msg" name="message" placeholder="Preferred setup time, questions, etc."></textarea></div>
+        <input type="text" name="_honey" tabindex="-1" autocomplete="off" style="position:absolute;left:-9999px" />
+        <button class="btn btn-primary btn-lg form-submit" type="submit" id="reqSubmit">Send request</button>
+        <p class="form-msg" id="reqMsg"></p>
+        <p class="form-note">Or email us directly at <a href="mailto:harryroger798@gmail.com">harryroger798@gmail.com</a></p>
+      </form>
+    </div>
+    <div class="modal-success" id="reqSuccess">
+      <div class="tick">✓</div>
+      <h3>Request sent!</h3>
+      <p class="modal-sub">Thanks — we’ve got your details and will email you payment info and next steps shortly.</p>
+      <button class="btn btn-dark btn-lg" data-close-request style="width:100%;justify-content:center">Close</button>
+    </div>
+  </div>
+</div>
+
 <footer>
   <div class="wrap">
     <div class="foot-top">
@@ -367,7 +417,7 @@
         <div>
           <h4>Get started</h4>
           <a href="#pricing">Pricing</a>
-          <a href="mailto:harryroger798@gmail.com?subject=Keynest%20setup%20request%20(%E2%82%B93000%20%2F%20%2450%20lifetime)">Request setup</a>
+          <a href="#" data-open-request>Request setup</a>
         </div>
       </div>
     </div>
@@ -383,6 +433,41 @@
   var t = document.getElementById('menuToggle'), n = document.getElementById('navlinks');
   if (t) t.addEventListener('click', function(){ n.classList.toggle('open'); });
   n && n.querySelectorAll('a').forEach(function(a){ a.addEventListener('click', function(){ n.classList.remove('open'); }); });
+
+  // Request modal
+  var rm = document.getElementById('reqModal');
+  function openReq(){ rm.classList.add('open'); document.body.style.overflow='hidden'; }
+  function closeReq(){ rm.classList.remove('open'); document.body.style.overflow=''; }
+  document.querySelectorAll('[data-open-request]').forEach(function(b){ b.addEventListener('click', function(e){ e.preventDefault(); openReq(); }); });
+  document.querySelectorAll('[data-close-request]').forEach(function(b){ b.addEventListener('click', function(e){ e.preventDefault(); closeReq(); }); });
+  document.getElementById('reqClose').addEventListener('click', closeReq);
+  rm.addEventListener('click', function(e){ if (e.target === rm) closeReq(); });
+  document.addEventListener('keydown', function(e){ if (e.key === 'Escape' && rm.classList.contains('open')) closeReq(); });
+
+  var rf = document.getElementById('reqForm'), rmsg = document.getElementById('reqMsg'), rsub = document.getElementById('reqSubmit');
+  rf.addEventListener('submit', function(e){
+    e.preventDefault();
+    if (rf._honey && rf._honey.value) return;
+    if (!rf.name.value.trim() || !rf.email.value.trim()) {
+      rmsg.className = 'form-msg err'; rmsg.textContent = 'Please enter your name and email.'; return;
+    }
+    rmsg.className = 'form-msg'; rmsg.textContent = '';
+    rsub.disabled = true; var orig = rsub.textContent; rsub.textContent = 'Sending…';
+    var data = { name: rf.name.value, email: rf.email.value, plan: rf.plan.value, message: rf.message.value, _subject: 'New Keynest setup request', _template: 'table' };
+    fetch('https://formsubmit.co/ajax/cdcf6a836770f1d559db68eb4cb45f85', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+      body: JSON.stringify(data)
+    }).then(function(r){ return r.json(); }).then(function(res){
+      if (res && (res.success === true || res.success === 'true')) {
+        document.getElementById('reqFormWrap').style.display = 'none';
+        document.getElementById('reqSuccess').style.display = 'block';
+      } else { throw new Error('send failed'); }
+    }).catch(function(){
+      rmsg.className = 'form-msg err';
+      rmsg.innerHTML = 'Couldn’t send automatically — please email <a href="mailto:harryroger798@gmail.com">harryroger798@gmail.com</a>.';
+    }).finally(function(){ rsub.disabled = false; rsub.textContent = orig; });
+  });
 </script>
 </body>
 </html>
