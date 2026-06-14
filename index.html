@@ -453,7 +453,16 @@
     }
     rmsg.className = 'form-msg'; rmsg.textContent = '';
     rsub.disabled = true; var orig = rsub.textContent; rsub.textContent = 'Sending…';
-    var data = { name: rf.name.value, email: rf.email.value, plan: rf.plan.value, message: rf.message.value, _subject: 'New Keynest setup request', _template: 'table' };
+    var data = {
+      name: rf.name.value,
+      email: rf.email.value,
+      plan: rf.plan.value,
+      message: rf.message.value,
+      _subject: 'New Keynest setup request',
+      _template: 'table',
+      _cc: 'support@geowallah.com',
+      _autoresponse: 'Hi ' + (rf.name.value.trim() || 'there') + ',\n\nThanks for requesting your Keynest setup! We\'ve received your request and will reply shortly with payment details (₹3,000 for India / $50 international) and the next steps to get your private, end-to-end encrypted vault live on your own Cloudflare account.\n\nIf you have any questions in the meantime, just reply to this email.\n\n— The Keynest Team'
+    };
     fetch('https://formsubmit.co/ajax/cdcf6a836770f1d559db68eb4cb45f85', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
